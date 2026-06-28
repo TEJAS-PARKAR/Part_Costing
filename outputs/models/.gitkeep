@@ -1,0 +1,4 @@
+# Model checkpoints are saved here.
+# best_model.pth    — lowest validation loss checkpoint
+# final_model.pth   — last epoch checkpoint
+# tabular_preprocessor.pkl — fitted sklearn transformer

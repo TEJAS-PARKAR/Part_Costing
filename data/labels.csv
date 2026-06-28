@@ -1,0 +1,11 @@
+part_id,material_type,manufacturing_process,weight,volume,machining_time,cost
+part_0001,Steel,Milling,12.500,4.167,45.0,1347.50
+part_0002,Aluminum,Turning,3.200,2.133,20.5,264.25
+part_0003,Titanium,Grinding,8.750,1.458,120.0,3545.00
+part_0004,Plastic,Drilling,0.850,0.708,8.0,52.00
+part_0005,Cast_Iron,Casting,25.000,12.500,60.0,1080.00
+part_0006,Steel,Turning,5.000,1.667,30.0,605.00
+part_0007,Aluminum,Milling,2.100,1.400,15.0,218.25
+part_0008,Titanium,Turning,4.500,0.750,90.0,1845.00
+part_0009,Steel,Drilling,9.800,3.267,55.0,1208.50
+part_0010,Aluminum,Grinding,1.500,1.000,35.5,420.75
