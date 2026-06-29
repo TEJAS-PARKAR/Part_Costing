@@ -112,7 +112,6 @@ def generate_demo_dataset(n_parts: int = 200):
         cost = max(base_cost, 1.0)  # ensure positive cost
 
         records.append({
-            "part_id":              part_id,
             "material_type":        material,
             "manufacturing_process": process,
             "weight":               round(weight, 3),
@@ -144,9 +143,9 @@ def generate_demo_dataset(n_parts: int = 200):
     os.makedirs(os.path.dirname(labels_path), exist_ok=True)
     df.to_csv(labels_path, index=False)
 
-    print(f"[Demo] Labels saved  → {labels_path}")
-    print(f"[Demo] Point clouds  → {raw_dir}/")
-    print(f"[Demo] Cost range    → ₹{df['cost'].min():.2f} – ₹{df['cost'].max():.2f}")
+    print(f"[Demo] Labels saved  -> {labels_path}")
+    print(f"[Demo] Point clouds  -> {raw_dir}/")
+    print(f"[Demo] Cost range    -> Rs. {df['cost'].min():.2f} - Rs. {df['cost'].max():.2f}")
     print(f"[Demo] Ready to train!\n")
 
 
@@ -237,10 +236,10 @@ def main():
     print("\n" + "=" * 60)
     print("  PIPELINE COMPLETE")
     print("=" * 60)
-    print(f"  Best model saved  → {PATHS['output_models']}/{LOGGING['checkpoint_name']}")
-    print(f"  Training history  → {PATHS['output_logs']}/training_history.json")
-    print(f"  Predictions CSV   → {PATHS['output_preds']}/predictions.csv")
-    print(f"  Plots             → {PATHS['output_preds']}/")
+    print(f"  Best model saved  -> {PATHS['output_models']}/{LOGGING['checkpoint_name']}")
+    print(f"  Training history  -> {PATHS['output_logs']}/training_history.json")
+    print(f"  Predictions CSV   -> {PATHS['output_preds']}/predictions.csv")
+    print(f"  Plots             -> {PATHS['output_preds']}/")
     print(f"\n  Final Test Metrics:")
     for k, v in metrics.items():
         unit = "%" if k == "MAPE" else ""

@@ -5,10 +5,10 @@ Combines the 1024-d global feature from PointNet with
 the tabular engineering features via simple concatenation.
 
 This module also houses the complete HybridCostModel:
-  PointNetEncoder → (global_feat)
+  PointNetEncoder -> (global_feat)
                                   ↘
-                                   Concatenate → RegressionHead → cost
-  TabularEncoder  → (tab_feat)   ↗
+                                   Concatenate -> RegressionHead -> cost
+  TabularEncoder  -> (tab_feat)   ↗
 
 The TabularEncoder is a small 2-layer MLP that projects raw
 tabular features into a richer embedding space before fusion.
@@ -33,8 +33,8 @@ class TabularEncoder(nn.Module):
     before fusion with PointNet output.
 
     Architecture:
-      FC(tabular_dim → 128) → BN → ReLU → Dropout(0.2)
-      FC(128         → 128) → BN → ReLU
+      FC(tabular_dim -> 128) -> BN -> ReLU -> Dropout(0.2)
+      FC(128         -> 128) -> BN -> ReLU
 
     Args:
         tabular_dim (int): Number of (encoded) tabular input features.

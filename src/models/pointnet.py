@@ -7,7 +7,7 @@ Architecture (Qi et al., 2017 — "PointNet: Deep Learning on Point Sets"):
   3. Feature T-Net (64×64 transform)  [optional]
   4. Shared MLP: 64, 128, 1024
   5. Global Max Pooling
-  → Output: 1024-dimensional global feature vector per sample
+  -> Output: 1024-dimensional global feature vector per sample
 
 Input shape : (B, C, N)  — C = 3 (xyz) or 6 (xyz + normals)
 Output shape: (B, 1024)
@@ -100,7 +100,7 @@ class PointNetEncoder(nn.Module):
         trans_feat = None
         if self.use_feature_transform:
             trans_feat = self.feature_tnet(x)     # (B, 64, 64)
-            # batch matrix multiply: (B, 64, 64) × (B, 64, N) → (B, 64, N)
+            # batch matrix multiply: (B, 64, 64) × (B, 64, N) -> (B, 64, N)
             x = torch.bmm(trans_feat, x)
 
         # ── Shared MLP Block 2 ─────────────────────────────────────────

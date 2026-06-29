@@ -61,7 +61,7 @@ class TrainingHistory:
     def save(self, path: str):
         with open(path, "w") as f:
             json.dump(self.to_dict(), f, indent=2)
-        print(f"[History] Saved training history → {path}")
+        print(f"[History] Saved training history -> {path}")
 
 
 # ─────────────────────────────────────────────
@@ -213,7 +213,7 @@ def train(
         log_dir = PATHS["output_logs"]
         os.makedirs(log_dir, exist_ok=True)
         writer = SummaryWriter(log_dir=log_dir)
-        print(f"  TensorBoard logs → {log_dir}")
+        print(f"  TensorBoard logs -> {log_dir}")
         print(f"  Run: tensorboard --logdir {log_dir}\n")
 
     # ── State ─────────────────────────────────────────────────────────
@@ -264,7 +264,7 @@ def train(
             best_val_loss = val_metrics["loss"]
             epochs_no_improve = 0
             _save_checkpoint(model, optimizer, epoch, val_metrics, best_ckpt_path)
-            print(f"           ✓ New best model saved (val_loss={best_val_loss:.4f})")
+            print(f"           * New best model saved (val_loss={best_val_loss:.4f})")
         else:
             epochs_no_improve += 1
 
@@ -279,10 +279,10 @@ def train(
     # ── Save final model ───────────────────────────────────────────────
     final_path = os.path.join(PATHS["output_models"], LOGGING["final_model_name"])
     _save_checkpoint(model, optimizer, epoch, val_metrics, final_path)
-    print(f"\n[Train] Final model saved → {final_path}")
+    print(f"\n[Train] Final model saved -> {final_path}")
 
     # ── Load best model ────────────────────────────────────────────────
-    print(f"[Train] Loading best checkpoint from → {best_ckpt_path}")
+    print(f"[Train] Loading best checkpoint from -> {best_ckpt_path}")
     checkpoint = torch.load(best_ckpt_path, map_location=device, weights_only=False)
     model.load_state_dict(checkpoint["model_state_dict"])
 

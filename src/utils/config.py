@@ -93,7 +93,7 @@ TRAINING = {
     "lr_gamma":             0.5,    # Multiply LR by this factor
     "early_stopping":       True,
     "patience":             15,     # Stop if val loss doesn't improve for N epochs
-    "gradient_clip":        1.0,    # Max gradient norm (None to disable)
+    "gradient_clip":        None,   # Max gradient norm (None to disable)
     "num_workers":          0,      # DataLoader workers (0 = main process)
     "pin_memory":           False,  # Set True if using GPU
     "device":               "auto", # 'auto' | 'cpu' | 'cuda' | 'mps'

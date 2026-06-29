@@ -20,14 +20,14 @@ class TNet(nn.Module):
     an input of shape (B, K, N).
 
     Architecture (following original PointNet paper):
-      Conv1d(K,  64)  → BN → ReLU
-      Conv1d(64, 128) → BN → ReLU
-      Conv1d(128,1024)→ BN → ReLU
+      Conv1d(K,  64)  -> BN -> ReLU
+      Conv1d(64, 128) -> BN -> ReLU
+      Conv1d(128,1024)-> BN -> ReLU
       GlobalMaxPool
-      FC(1024, 512) → BN → ReLU
-      FC(512,  256) → BN → ReLU
+      FC(1024, 512) -> BN -> ReLU
+      FC(512,  256) -> BN -> ReLU
       FC(256,  K*K)
-      Reshape → K×K matrix
+      Reshape -> K×K matrix
       Add identity matrix (residual)
 
     The residual addition ensures the network starts as an identity

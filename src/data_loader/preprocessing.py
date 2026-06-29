@@ -185,7 +185,7 @@ def build_tabular_preprocessor(df: pd.DataFrame) -> ColumnTransformer:
     Build a sklearn ColumnTransformer for tabular features.
 
     Pipeline:
-      - Categorical columns: OneHotEncoder (handle unknown → ignore)
+      - Categorical columns: OneHotEncoder (handle unknown -> ignore)
       - Numerical columns: StandardScaler
 
     Args:
@@ -236,7 +236,9 @@ def split_dataframe(df: pd.DataFrame,
     train_val, test = train_test_split(df, test_size=test_split, random_state=seed)
     val_frac = val_split / (1.0 - test_split)
     train, val = train_test_split(train_val, test_size=val_frac, random_state=seed)
-    return train.reset_index(drop=True), val.reset_index(drop=True), test.reset_index(drop=True)
+    # NOTE: Do NOT reset_index — the original index is used by PartCostingDataset
+    # to derive part file names (e.g. row 42 -> part_0042.txt).
+    return train, val, test
 
 
 # ─────────────────────────────────────────────
@@ -265,10 +267,16 @@ def load_point_cloud_file(filepath: str) -> np.ndarray:
 
     ext = os.path.splitext(filepath)[1].lower()
     if ext == ".csv":
-        data = pd.read_csv(filepath, header=None).values.astype(np.float32)
+        try:
+            data = pd.read_csv(filepath, header=None).values.astype(np.float32)
+        except ValueError:
+            data = pd.read_csv(filepath, header=0).values.astype(np.float32)
     else:
         # Try space/tab delimited
-        data = np.loadtxt(filepath, dtype=np.float32)
+        try:
+            data = np.loadtxt(filepath, dtype=np.float32)
+        except ValueError:
+            data = np.loadtxt(filepath, dtype=np.float32, skiprows=1)
 
     if data.ndim == 1:
         data = data.reshape(1, -1)

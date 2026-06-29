@@ -65,8 +65,8 @@ def collect_predictions(model, loader, device=None):
 
             pred, _, _ = model(pc, tab)
 
-            all_preds.append(pred.cpu().numpy())
-            all_targets.append(cost.cpu().numpy())
+            all_preds.append((pred * 1000.0).cpu().numpy())
+            all_targets.append((cost * 1000.0).cpu().numpy())
 
     preds   = np.concatenate(all_preds,   axis=0)
     targets = np.concatenate(all_targets, axis=0)
@@ -106,7 +106,7 @@ def compute_metrics(preds: np.ndarray, targets: np.ndarray) -> dict:
         "MSE":  mse,
         "RMSE": rmse,
         "MAPE": mape,
-        "R2":   r2,
+        "R2":   float(r2),
     }
 
 
@@ -133,7 +133,7 @@ def save_predictions(preds: np.ndarray, targets: np.ndarray, output_dir: str):
     })
     path = os.path.join(output_dir, "predictions.csv")
     df.to_csv(path, index=False)
-    print(f"[Evaluate] Predictions saved → {path}")
+    print(f"[Evaluate] Predictions saved -> {path}")
     return df
 
 
@@ -170,8 +170,8 @@ def plot_results(preds: np.ndarray, targets: np.ndarray, output_dir: str):
     min_val = min(targets.min(), preds.min())
     max_val = max(targets.max(), preds.max())
     ax.plot([min_val, max_val], [min_val, max_val], "r--", lw=1.5, label="Perfect prediction")
-    ax.set_xlabel("Actual Cost (₹)", fontsize=12)
-    ax.set_ylabel("Predicted Cost (₹)", fontsize=12)
+    ax.set_xlabel("Actual Cost (Rs. )", fontsize=12)
+    ax.set_ylabel("Predicted Cost (Rs. )", fontsize=12)
     ax.set_title("Actual vs Predicted Manufacturing Cost", fontsize=14, fontweight="bold")
     ax.legend()
     plt.tight_layout()
@@ -182,7 +182,7 @@ def plot_results(preds: np.ndarray, targets: np.ndarray, output_dir: str):
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.scatter(preds, residuals, alpha=0.6, edgecolors="none", color="#DD8452", s=40)
     ax.axhline(0, color="red", linestyle="--", lw=1.5)
-    ax.set_xlabel("Predicted Cost (₹)", fontsize=12)
+    ax.set_xlabel("Predicted Cost (Rs. )", fontsize=12)
     ax.set_ylabel("Residual (Actual − Predicted)", fontsize=12)
     ax.set_title("Residual Plot", fontsize=14, fontweight="bold")
     plt.tight_layout()
@@ -199,7 +199,7 @@ def plot_results(preds: np.ndarray, targets: np.ndarray, output_dir: str):
     plt.savefig(os.path.join(output_dir, "residual_distribution.png"), dpi=150)
     plt.close()
 
-    print(f"[Plot] Figures saved → {output_dir}")
+    print(f"[Plot] Figures saved -> {output_dir}")
 
 
 # ─────────────────────────────────────────────
@@ -260,6 +260,6 @@ def evaluate(model, test_loader, device=None, save_outputs: bool = True) -> dict
         os.makedirs(out_dir, exist_ok=True)
         with open(metrics_path, "w") as f:
             json.dump(metrics, f, indent=2)
-        print(f"[Evaluate] Metrics saved → {metrics_path}")
+        print(f"[Evaluate] Metrics saved -> {metrics_path}")
 
     return metrics

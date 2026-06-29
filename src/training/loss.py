@@ -149,7 +149,7 @@ class CostingLoss(nn.Module):
         total = mse + reg
 
         with torch.no_grad():
-            mae = mean_absolute_error(pred, target)
+            mae = mean_absolute_error(pred * 1000.0, target * 1000.0)
 
         return {
             "total": total,

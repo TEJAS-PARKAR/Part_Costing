@@ -5,10 +5,10 @@ Accepts a concatenated feature vector:
   [PointNet global features (1024-d)] + [Tabular features (tabular_dim)]
 
 Architecture:
-  FC(1024 + tabular_dim → 512) → BN → ReLU → Dropout(0.3)
-  FC(512               → 256) → BN → ReLU → Dropout(0.3)
-  FC(256               → 64)  → BN → ReLU
-  FC(64                → 1)   → Linear (no activation, raw regression output)
+  FC(1024 + tabular_dim -> 512) -> BN -> ReLU -> Dropout(0.3)
+  FC(512               -> 256) -> BN -> ReLU -> Dropout(0.3)
+  FC(256               -> 64)  -> BN -> ReLU
+  FC(64                -> 1)   -> Linear (no activation, raw regression output)
 """
 
 import torch
@@ -53,7 +53,7 @@ class RegressionHead(nn.Module):
 
             in_dim = out_dim
 
-        # ── Output layer (no activation → raw regression value) ────────
+        # ── Output layer (no activation -> raw regression value) ────────
         layers.append(nn.Linear(in_dim, 1))
 
         self.network = nn.Sequential(*layers)

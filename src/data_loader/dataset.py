@@ -66,7 +66,6 @@ class PartCostingDataset(Dataset):
         self.num_points = num_points
         self.use_normals = use_normals
         self.target_col = TABULAR["target_col"]
-        self.part_id_col = TABULAR["part_id_col"]
 
         # Pre-transform all tabular features at once for efficiency
         self.tabular_features = tabular_transformer.transform(df).astype(np.float32)
@@ -74,8 +73,13 @@ class PartCostingDataset(Dataset):
         # Cache cost values as numpy array
         self.costs = df[self.target_col].values.astype(np.float32)
 
-        # Part IDs (used to find point cloud files)
-        self.part_ids = df[self.part_id_col].astype(str).values
+        # Derive part IDs from the DataFrame's original index.
+        # Rows are indexed 0-based so part_0000.txt maps to index 0, etc.
+        # If the df carries a non-default integer index (from splitting), use it;
+        # otherwise fall back to the positional index.
+        self.part_ids = np.array(
+            [f"part_{i:04d}" for i in df.index], dtype=object
+        )
 
     def __len__(self) -> int:
         return len(self.df)
@@ -108,7 +112,7 @@ class PartCostingDataset(Dataset):
         tab_tensor = torch.from_numpy(self.tabular_features[idx]).float()
 
         # ── Cost (target) ──────────────────────────────────────────────
-        cost_tensor = torch.tensor(self.costs[idx], dtype=torch.float32)
+        cost_tensor = torch.tensor(self.costs[idx] / 1000.0, dtype=torch.float32)
 
         return pc_tensor, tab_tensor, cost_tensor
 
@@ -141,7 +145,7 @@ class PartCostingDataModule:
       1. Loads labels.csv
       2. Splits into train / val / test
       3. Fits the tabular preprocessor on train data only
-      4. Exposes get_dataloaders() → (train_loader, val_loader, test_loader)
+      4. Exposes get_dataloaders() -> (train_loader, val_loader, test_loader)
       5. Saves the fitted preprocessor to disk for inference
 
     Args:
@@ -202,7 +206,7 @@ class PartCostingDataModule:
 
     def _validate_labels(self, df: pd.DataFrame):
         """Ensure required columns exist in labels.csv."""
-        required = [TABULAR["part_id_col"], TABULAR["target_col"]]
+        required = [TABULAR["target_col"]]
         missing = [c for c in required if c not in df.columns]
         if missing:
             raise ValueError(f"Missing required columns in labels.csv: {missing}")
@@ -230,8 +234,7 @@ class PartCostingDataModule:
 
         train_loader = DataLoader(
             train_dataset, batch_size=self.batch_size, shuffle=True,
-            num_workers=self.num_workers, pin_memory=TRAINING["pin_memory"],
-            drop_last=True
+            num_workers=self.num_workers, pin_memory=TRAINING["pin_memory"]
         )
         val_loader = DataLoader(
             val_dataset, batch_size=self.batch_size, shuffle=False,
