@@ -98,7 +98,6 @@ python main.py --epochs 50 --batch-size 8 --lr 0.0005 --no-augment
 
 | Column | Type | Description |
 |---|---|---|
-| `part_id` | string | Unique part identifier (matches point cloud filename) |
 | `material_type` | categorical | e.g., `Steel`, `Aluminum`, `Titanium` |
 | `manufacturing_process` | categorical | e.g., `Turning`, `Milling`, `Grinding` |
 | `weight` | float | Part weight in kg |
@@ -106,14 +105,15 @@ python main.py --epochs 50 --batch-size 8 --lr 0.0005 --no-augment
 | `machining_time` | float | Estimated machining time in minutes (optional) |
 | `cost` | float | **Target**: manufacturing cost in ₹ |
 
-### Point Cloud Files (`data/raw/<part_id>.txt`)
+### Point Cloud Files (`data/raw/part_XXXX.csv`)
 
-- One `.txt` or `.csv` file per part, named exactly `<part_id>.txt`
+- One `.txt` or `.csv` file per part, named sequentially `part_0000.csv`, `part_0001.csv`, etc.
+- The **row index** in `labels.csv` automatically corresponds to the file number (i.e. Row 0 = `part_0000.csv`).
 - Each file: **2048 rows × 6 columns**
 - Columns: `x  y  z  nx  ny  nz` (3D coordinates + surface normals)
 - Delimiter: space, comma, or tab
 
-**Example file content** (`part_0001.txt`):
+**Example file content** (`part_0001.csv`):
 ```
 0.123456 -0.234567 0.456789 0.707107 0.000000 0.707107
 -0.345678 0.456789 -0.123456 -0.577350 0.577350 0.577350
@@ -173,6 +173,7 @@ All hyperparameters live in [`src/utils/config.py`](src/utils/config.py):
 | `use_normals` | True | Include nx,ny,nz channels |
 | `early_stopping` | True | Stop if val loss plateaus |
 | `patience` | 15 | Early stopping patience |
+| `gradient_clip` | None | Max gradient norm (None to disable) |
 
 ---
 
@@ -180,7 +181,7 @@ All hyperparameters live in [`src/utils/config.py`](src/utils/config.py):
 
 - ✅ **Early Stopping** — prevents overfitting
 - ✅ **LR Scheduling** — StepLR decay every 20 epochs
-- ✅ **Gradient Clipping** — stabilizes training
+- ✅ **Target Normalization** — costs are internally scaled down by 1000 to stabilize MSE gradients, and scaled back up for accurate evaluation in real currency.
 - ✅ **Orthogonality Regularization** — stabilizes T-Net learning
 - ✅ **Data Augmentation** — random rotation (Z-axis), jitter, optional scaling
 - ✅ **TensorBoard Logging** — loss + MAE curves per epoch
